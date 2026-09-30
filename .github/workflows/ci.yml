@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        go: ['1.22.x', '1.23.x']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+      - run: gofmt -d . | tee /tmp/gofmt.diff && test ! -s /tmp/gofmt.diff
+      - run: go vet ./...
+      - run: go test -race -coverprofile=coverage.out ./...
