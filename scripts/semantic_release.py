@@ -9,14 +9,14 @@ from pathlib import Path
 from typing import Iterable
 
 SEMVER_RE = re.compile(
-    r"^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+    r"^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$"
 )
 CONVENTIONAL_RE = re.compile(
-    r"^(?P<type>[A-Za-z0-9_-]+)(?:\\((?P<scope>[^)]+)\\))?"
-    r"(?P<breaking>!)?:\\s*(?P<description>.+)$"
+    r"^(?P<type>[A-Za-z0-9_-]+)(?:\((?P<scope>[^)]+)\))?"
+    r"(?P<breaking>!)?:\s*(?P<description>.+)$"
 )
 BREAKING_FOOTER_RE = re.compile(
-    r"(?im)^BREAKING(?: |-)?CHANGE:\\s*.+$"
+    r"(?im)^BREAKING(?: |-)?CHANGE:\s*.+$"
 )
 
 KNOWN_TYPES = {
