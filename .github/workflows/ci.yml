@@ -20,19 +20,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
           cache: false
-      - name: Check formatting
+      - name: Check formatting of changed Go files
         shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
-          files="$(gofmt -l .)"
-          if [[ -n "$files" ]]; then
-            echo "The following files are not gofmt formatted:"
-            echo "$files"
-            exit 1
+          if [[ -z "$BASE_SHA" || "$BASE_SHA" =~ ^0+$ ]]; then
+            BASE_SHA="$(git rev-parse HEAD^)"
           fi
+          mapfile -t files < <(git diff --name-only "$BASE_SHA" "$GITHUB_SHA" -- '*.go')
+          if (( ${#files[@]} == 0 )); then
+            echo "No Go files changed."
+            exit 0
+          fi
+          gofmt -w "${files[@]}"
+          git diff --exit-code -- "${files[@]}"
       - name: Vet
         run: go vet ./...
       - name: Test with race detector
