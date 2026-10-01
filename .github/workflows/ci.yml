@@ -80,6 +80,8 @@ jobs:
             echo "Tag $TAG already exists remotely; refusing to move it."
             exit 1
           fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag -a "$TAG" "$GITHUB_SHA" -m "Woobe SDK for Go $TAG"
           git push origin "refs/tags/$TAG"
 
