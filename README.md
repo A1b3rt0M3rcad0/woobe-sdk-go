@@ -150,6 +150,28 @@ POST /v1/contracts/validate
 
 `/v1/jobs` is intentionally not exposed because Woobe currently returns `501` for Runtime Jobs.
 
+## Automatic Semantic Versioning
+
+Every successful push to `master` is released automatically after the Go test matrix passes.
+
+The CI derives the next stable Semantic Version from commits since the latest `vMAJOR.MINOR.PATCH` tag:
+
+- `BREAKING CHANGE:` or a Conventional Commit `!` marker -> **major**;
+- `feat` -> **minor**;
+- every other recognized type -> **patch**;
+- an unknown type or a non-Conventional Commit subject is classified as `chore` -> **patch**.
+
+The release job creates an immutable Git tag and a GitHub Release from the exact tested `master` commit. For Go consumers, the tag is the module version, so no separate package registry publication is required.
+
+Examples:
+
+```text
+feat(runtime): add network observation   -> minor
+fix(stream): preserve event sequence     -> patch
+feat(client)!: remove legacy option      -> major
+Refresh examples                         -> chore -> patch
+```
+
 ## Development
 
 ```bash

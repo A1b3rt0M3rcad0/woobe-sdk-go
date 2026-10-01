@@ -1,5 +1,7 @@
 # Changelog
 
+Release history is published automatically as immutable Git tags and GitHub Releases by CI after successful pushes to `master`.
+
 ## Unreleased
 
 ### Added
